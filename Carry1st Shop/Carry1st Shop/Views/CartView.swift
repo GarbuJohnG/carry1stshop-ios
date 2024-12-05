@@ -18,7 +18,7 @@ struct CartView: View {
             counts[item, default: 0] += 1
         }
         
-        VStack {
+        ZStack {
             
             if uniqueItemCounts.isEmpty {
                 
@@ -66,8 +66,33 @@ struct CartView: View {
                     .padding(.vertical, 5)
                 }
             }
+            
+            chekoutButton
+                .frame(maxHeight: .infinity, alignment: .bottom)
+                .padding(.horizontal)
+            
         }
         .navigationTitle("Cart")
+        
+    }
+    
+    var chekoutButton: some View {
+        
+        Button(action: {
+            print("Checkout Now")
+            
+        }) {
+            HStack {
+                Image(systemName: "cart.badge.plus")
+                Text("Checkout")
+            }
+            .font(.headline)
+            .frame(maxWidth: .infinity)
+            .padding()
+            .background(Color.green)
+            .foregroundStyle(.white)
+            .cornerRadius(10)
+        }
         
     }
     
