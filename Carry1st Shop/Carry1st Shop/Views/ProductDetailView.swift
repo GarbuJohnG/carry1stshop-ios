@@ -12,6 +12,8 @@ struct ProductDetailView: View {
     
     @EnvironmentObject var viewModel: ProductViewModel
     
+    @State private var showMaxItemsAlert: Bool = false
+    
     let product: Product
     
     var body: some View {
@@ -44,11 +46,15 @@ struct ProductDetailView: View {
             
             Spacer()
             
-            alreadyInCarButton
-                .padding(.horizontal)
+            let cartQty = viewModel.cart.filter({ $0.id == product.id }).count
             
-            addCartButton
-                .padding(.horizontal)
+            if cartQty > 0 {
+                alreadyInCarButton
+                    .padding(.horizontal)
+            } else {
+                addCartButton
+                    .padding(.horizontal)
+            }
             
             buyButton
                 .padding(.horizontal)
@@ -66,6 +72,11 @@ struct ProductDetailView: View {
                     .overlay(BadgeView(count: viewModel.cart.count))
             }
         )
+        .alert("Maximum Quantity", isPresented: $showMaxItemsAlert) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            Text("You can only add \(product.quantity) items to cart!")
+        }
         
     }
     
@@ -131,13 +142,19 @@ struct ProductDetailView: View {
             
             Spacer()
             
-            Text("1")
+            Text("\(viewModel.cart.filter({ $0.id == product.id }).count)")
                 .font(.system(size: 16, weight: .bold))
             
             Spacer()
             
+            let cartQty = viewModel.cart.filter({ $0.id == product.id }).count
+            
             Button(action: {
-                viewModel.addToCart(product: product)
+                if cartQty < product.quantity {
+                    viewModel.addToCart(product: product)
+                } else {
+                    showMaxItemsAlert = true
+                }
             }) {
                 
                 ZStack {
@@ -150,6 +167,7 @@ struct ProductDetailView: View {
                         .foregroundColor(.blue)
                     
                 }
+                .opacity(cartQty < product.quantity ? 1 : 0.3)
                 
             }
             

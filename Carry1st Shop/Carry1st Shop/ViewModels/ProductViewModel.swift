@@ -13,7 +13,7 @@ class ProductViewModel: ObservableObject {
     @Published private(set) var cart: [Product] = []
     @Published private(set) var isLoading = false
     @Published private(set)var errorMessage: String?
-
+    
     private let networkService = NetworkService()
     
     init() {
