@@ -5,8 +5,7 @@
 //  Created by John Gachuhi on 05/12/2024.
 //
 
-
-import Foundation
+import SwiftUI
 
 class ProductViewModel: ObservableObject {
     

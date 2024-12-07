@@ -66,7 +66,7 @@ struct ProductDetailView: View {
                     .toolbarRole(.editor)
             ) {
                 Image(systemName: "cart.fill")
-                    .foregroundStyle(.blue)
+                    .foregroundStyle(.primary)
                     .overlay(BadgeView(count: viewModel.cart.count))
             }
         )

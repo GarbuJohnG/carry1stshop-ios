@@ -27,11 +27,29 @@ struct ContentView: View {
                     
                 } else {
                     
-                    List(viewModel.products) { product in
-                        ProductRowView(product: product)
-                    }
-                    .refreshable {
-                        viewModel.fetchProducts()
+                    GeometryReader { geometry in
+                        
+                        let screenWidth = geometry.size.width
+                        let itemWidth = (screenWidth - 40) / 2
+                        let itemHeight = itemWidth * 4 / 3
+                        
+                        ScrollView {
+                            
+                            LazyVGrid(columns: [
+                                GridItem(.fixed(itemWidth), spacing: 16),
+                                GridItem(.fixed(itemWidth), spacing: 16)
+                            ], spacing: 16) {
+                                
+                                ForEach(viewModel.products) { product in
+                                    
+                                    ProductGridItem(product: product, itemWidth: itemWidth, itemHeight: itemHeight)
+                                    
+                                }
+                                
+                            }
+                            .padding(.horizontal, 15)
+                            
+                        }
                     }
                     
                 }
@@ -44,7 +62,7 @@ struct ContentView: View {
                         .toolbarRole(.editor)
                 ) {
                     Image(systemName: "cart.fill")
-                        .foregroundStyle(.blue)
+                        .foregroundColor(.primary)
                         .overlay(BadgeView(count: viewModel.cart.count))
                 }
             )
@@ -55,6 +73,4 @@ struct ContentView: View {
     }
 }
 
-#Preview {
-    ContentView()
-}
+
