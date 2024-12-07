@@ -1,6 +1,14 @@
 # Carry1st Shop - iOS
 This is a project undertaken to showcase my skills in iOS development to the team at Carry1st when building iOS Applications by building this E-Commerce App that allows for the purchase of digital credits and lives
 
+![Simulator Screenshot - iPhone 16 Pro - 2024-12-07 at 17 55 31](https://github.com/user-attachments/assets/847a39fb-d188-463f-9096-1cfd04ea880b)
+![Simulator Screenshot - iPhone 16 Pro - 2024-12-07 at 17 55 36](https://github.com/user-attachments/assets/64fd44de-27d0-46e0-88e1-6f0bbdeb8bc2)
+![Simulator Screenshot - iPhone 16 Pro - 2024-12-07 at 17 55 40](https://github.com/user-attachments/assets/0958912a-91af-40cd-92c2-749da1af4748)
+![Simulator Screenshot - iPhone 16 Pro - 2024-12-07 at 17 55 49](https://github.com/user-attachments/assets/62a647a9-e43a-4d32-a31b-88b10a268ff5)
+![Simulator Screenshot - iPhone 16 Pro - 2024-12-07 at 17 56 08](https://github.com/user-attachments/assets/582d2d72-26ed-4c96-9365-d09b10583bc6)
+![Simulator Screenshot - iPhone 16 Pro - 2024-12-07 at 17 56 48](https://github.com/user-attachments/assets/38a59830-df7c-4299-8d11-5146b7d0cf44)
+![Simulator Screenshot - iPhone 16 Pro - 2024-12-07 at 17 56 56](https://github.com/user-attachments/assets/4da2ccfa-5dbc-4409-859d-f052c5a8f349)
+
 ## Setup & Running 
 The project requires no additional libraries to set up and run. Just ensure you have access to Xcode. This particular project was built using Xcode version 16.1. Once you have that installed and ready, run the _Carry1st Shop.xcodeproj_ file in the _Carry1st Shop_ folder. This will open up the project revealing the code and it's folder structure. Select device you would like to run the project on.
 
