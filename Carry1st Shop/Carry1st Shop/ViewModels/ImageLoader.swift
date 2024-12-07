@@ -19,6 +19,9 @@ class ImageLoader: ObservableObject {
     private let fileManager = LocalFileManager.shared
     private let folderName = "cached_images"
 
+    
+    /// This function loads imaged either from the Local storage if already cached or from the URLSession if not yet cached
+    /// - Parameter url: This is the url from which the image is downloaded and saved under in the cache
     func load(url: URL) {
         
         let inputData = Data(url.absoluteString.utf8)
