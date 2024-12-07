@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		5E706BFB2D043EB800BC1D7C /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 5E706BFA2D043EB800BC1D7C /* RealmSwift */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		5E7069FC2CFEDD5800BC1D7C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -52,6 +56,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5E706BFB2D043EB800BC1D7C /* RealmSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -112,6 +117,7 @@
 			);
 			name = "Carry1st Shop";
 			packageProductDependencies = (
+				5E706BFA2D043EB800BC1D7C /* RealmSwift */,
 			);
 			productName = "Carry1st Shop";
 			productReference = 5E7069EB2CFEDD5300BC1D7C /* Carry1st Shop.app */;
@@ -196,6 +202,7 @@
 			mainGroup = 5E7069E22CFEDD5300BC1D7C;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
+				5E706BF92D043EB800BC1D7C /* XCRemoteSwiftPackageReference "realm-swift" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 5E7069EC2CFEDD5300BC1D7C /* Products */;
@@ -560,6 +567,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		5E706BF92D043EB800BC1D7C /* XCRemoteSwiftPackageReference "realm-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/realm/realm-swift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 10.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		5E706BFA2D043EB800BC1D7C /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5E706BF92D043EB800BC1D7C /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 5E7069E32CFEDD5300BC1D7C /* Project object */;
 }

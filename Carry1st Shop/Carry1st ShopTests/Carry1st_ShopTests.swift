@@ -6,7 +6,6 @@
 //
 
 import Testing
-@testable import Carry1st_Shop
 
 struct Carry1st_ShopTests {
 

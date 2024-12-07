@@ -13,6 +13,19 @@ Each of the List Items is then linked to a _ProductDetailsView_ that allows for 
 
 The user can then see the different counts of items within the cart and can choose to either increament or decreament the number of each products added. One can remove an item by decreamenting to zero. 
 
+Usage of RealDB comes in handy here ar we save the product list so as to use even when offline (which the user is notified when accessing the app and it goes offline). The user can even add to cart when offline only that when they get to completing a purchase they might encounter and issue. A _LocalFileManager_ class has also been used to created a folder with the images data which acts as a cache for again when the user is offline and saves them data when they are online as there is no need to constantly redownload the images.
+
+## External Libraries
+
+- RealmDB from [RealmDB](https://github.com/realm/realm-swift.git)
+
+Justification: Showcasing ability to include external libraries and incorporate them withing the apps functionality. It is also very versatile when it comes to storage, updating and usage of any structured data that we might get backend/API service. In this case, it allows for offline storage of Products to allow for browsing through the catalog even without internet. It also helps persist the data in the cart.
+
+## Assumptions
+
+- An assumption made is that the products don't change often and thus does not warrant an occassional background refresh
+- Another is that there are only a limited number of products hence no need yet for paginated results which would ease the load if the product catalog was massive
+
 ## Endpoints
 
 - [Provided by Carry1st](https://my-json-server.typicode.com/carry1stdeveloper/mock-product-api/productBundles)
@@ -23,5 +36,6 @@ The user can then see the different counts of items within the cart and can choo
 - [X] RESTful APIs
 - [x] SwiftUI Lists
 - [x] MVVM Pattern
+- [x] RealmDB
 
 

@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     
-    @StateObject private var viewModel = ProductViewModel()
+    @StateObject private var productVM = ProductViewModel()
 
     var body: some View {
         
@@ -17,13 +17,9 @@ struct ContentView: View {
             
             VStack {
                 
-                if viewModel.isLoading {
+                if productVM.isLoading {
                     
                     ProgressView("Loading...")
-                    
-                } else if let errorMessage = viewModel.errorMessage {
-                    
-                    EmptyListView(message: "Error: \(errorMessage)")
                     
                 } else {
                     
@@ -40,7 +36,7 @@ struct ContentView: View {
                                 GridItem(.fixed(itemWidth), spacing: 16)
                             ], spacing: 16) {
                                 
-                                ForEach(viewModel.products) { product in
+                                ForEach(productVM.products) { product in
                                     
                                     ProductGridItem(product: product, itemWidth: itemWidth, itemHeight: itemHeight)
                                     
@@ -57,20 +53,43 @@ struct ContentView: View {
             }
             .navigationTitle("Products")
             .navigationBarItems(
+                leading: Image("Carry1st-logo")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(height: 20)
+                    .foregroundColor(.primary),
                 trailing: NavigationLink(
-                    destination: CartView(viewModel: viewModel)
-                        .toolbarRole(.editor)
-                ) {
-                    Image(systemName: "cart.fill")
-                        .foregroundColor(.primary)
-                        .overlay(BadgeView(count: viewModel.cart.count))
-                }
+                        destination: CartView(productVM: productVM)
+                            .toolbarRole(.editor)
+                    ) {
+                        Image(systemName: "cart.fill")
+                            .foregroundColor(.primary)
+                            .overlay(BadgeView(count: productVM.itemsCount))
+                    }
             )
             
         }
-        .environmentObject(viewModel)
+        .overlay(
+            productVM.isOffline ? BannerView(message: "You are offline") : nil,
+            alignment: .top
+        )
+        .overlay(
+            productVM.isPurchaseMade ? BannerView(message: "Congratulations on your purchase!", bgColor: .green) : nil,
+            alignment: .top
+        )
+        .overlay(
+            productVM.isErrorEncountered ? BannerView(message: productVM.errorMessage ?? "") : nil,
+            alignment: .top
+        )
+        .environmentObject(productVM)
         
     }
 }
+//
+//#Preview {
+//    ContentView()
+//}
+
+
 
 

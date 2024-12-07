@@ -10,7 +10,7 @@ import SwiftUI
 
 struct ProductDetailView: View {
     
-    @EnvironmentObject var viewModel: ProductViewModel
+    @EnvironmentObject var productVM: ProductViewModel
     
     @State private var showMaxItemsAlert: Bool = false
     
@@ -18,7 +18,7 @@ struct ProductDetailView: View {
     
     var body: some View {
         
-        VStack(spacing: 16) {
+        VStack(spacing: 20) {
             
             if let url = URL(string: product.imageLocation) {
                 CachedImageView(url: url, imageWidth: 200, imageHeight: 200)
@@ -36,7 +36,7 @@ struct ProductDetailView: View {
                     .font(.system(size: 16))
                     .foregroundColor(.secondary)
                 
-                Text("\(product.currencySymbol)\(String(format: "%.2f", product.price))")
+                Text("\(product.currencyCode) \(String(format: "%.2f", product.price))")
                     .font(.system(size: 20, weight: .bold))
                     .foregroundColor(.green)
                 
@@ -46,7 +46,7 @@ struct ProductDetailView: View {
             
             Spacer()
             
-            let cartQty = viewModel.cart.filter({ $0.id == product.id }).count
+            let cartQty = productVM.cart.first(where: { $0.id == product.id })?.count ?? 0
             
             if cartQty > 0 {
                 alreadyInCarButton
@@ -64,18 +64,18 @@ struct ProductDetailView: View {
         .navigationTitle(product.name)
         .navigationBarItems(
             trailing: NavigationLink(
-                destination: CartView(viewModel: viewModel)
+                destination: CartView(productVM: productVM)
                     .toolbarRole(.editor)
             ) {
                 Image(systemName: "cart.fill")
                     .foregroundColor(.primary)
-                    .overlay(BadgeView(count: viewModel.cart.count))
+                    .overlay(BadgeView(count: productVM.itemsCount))
             }
         )
         .alert("Maximum Quantity", isPresented: $showMaxItemsAlert) {
             Button("OK", role: .cancel) { }
         } message: {
-            Text("You can only add \(product.quantity) items to cart!")
+            Text("You can only add \(product.quantity) \(product.name)s to cart!")
         }
         
     }
@@ -84,7 +84,7 @@ struct ProductDetailView: View {
         
         Button(action: {
             print("Buy Now tapped for \(product.name)")
-            
+            productVM.makePurchase()
         }) {
             HStack {
                 Image(systemName: "creditcard")
@@ -103,7 +103,7 @@ struct ProductDetailView: View {
     var addCartButton: some View {
         
         Button(action: {
-            viewModel.addToCart(product: product)
+            productVM.addToCart(productID: product.id)
         }) {
             HStack {
                 Image(systemName: "cart.badge.plus")
@@ -124,16 +124,16 @@ struct ProductDetailView: View {
         HStack {
             
             Button(action: {
-                viewModel.removeFromCart(product: product)
+                productVM.removeFromCart(productID: product.id)
             }) {
                 
                 ZStack {
                     
                     Color.red.opacity(0.4)
-                        .frame(width: 50, height: 50)
+                        .frame(width: 30, height: 30)
                         .clipShape(.circle)
                     
-                    Image(systemName: "trash")
+                    Image(systemName: "minus")
                         .foregroundColor(.red)
                     
                 }
@@ -142,16 +142,16 @@ struct ProductDetailView: View {
             
             Spacer()
             
-            Text("\(viewModel.cart.filter({ $0.id == product.id }).count)")
+            Text("\(productVM.cart.first(where: { $0.id == product.id })?.count ?? 0)")
                 .font(.system(size: 16, weight: .bold))
             
             Spacer()
             
-            let cartQty = viewModel.cart.filter({ $0.id == product.id }).count
+            let cartQty = productVM.cart.first(where: { $0.id == product.id })?.count ?? 0
             
             Button(action: {
                 if cartQty < product.quantity {
-                    viewModel.addToCart(product: product)
+                    productVM.addToCart(productID: product.id)
                 } else {
                     showMaxItemsAlert = true
                 }
@@ -160,7 +160,7 @@ struct ProductDetailView: View {
                 ZStack {
                     
                     Color.blue.opacity(0.4)
-                        .frame(width: 50, height: 50)
+                        .frame(width: 30, height: 30)
                         .clipShape(.circle)
                     
                     Image(systemName: "plus")
@@ -172,11 +172,10 @@ struct ProductDetailView: View {
             }
             
         }
+        .frame(maxWidth: 110)
         
     }
     
 }
 
-#Preview {
-    ContentView()
-}
+

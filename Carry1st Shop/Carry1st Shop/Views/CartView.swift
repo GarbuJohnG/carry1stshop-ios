@@ -10,66 +10,44 @@ import SwiftUI
 
 struct CartView: View {
     
-    @ObservedObject var viewModel: ProductViewModel
+    @ObservedObject var productVM: ProductViewModel
+    
+    @State private var showMaxItemsAlert: Bool = false
     
     var body: some View {
         
-        let uniqueItemCounts = viewModel.cart.reduce(into: [:]) { counts, item in
-            counts[item, default: 0] += 1
-        }
-        
         ZStack {
             
-            if uniqueItemCounts.isEmpty {
+            if productVM.cart.isEmpty {
                 
                 EmptyListView()
                 
             } else {
                 
-                List(Array(uniqueItemCounts.keys), id: \.id) { product in
+                List(productVM.cart) { cartItem in
                     
-                    HStack {
-                        
-                        let count = uniqueItemCounts[product] ?? 0
-                        
-                        VStack(alignment: .leading) {
-                            
-                            Text(product.name)
-                                .font(.headline)
-                            
-                            Text(product.description)
-                                .font(.system(size: 13))
-                                .foregroundColor(.secondary)
-                            
-                        }
-                        
-                        Spacer()
-                        
-                        Stepper(value: Binding(
-                            get: { uniqueItemCounts[product] ?? 0 },
-                            set: { newValue in
-                                let currentCount = uniqueItemCounts[product] ?? 0
-                                if newValue > currentCount {
-                                    viewModel.addToCart(product: product)
-                                } else if newValue < currentCount {
-                                    viewModel.removeFromCart(product: product)
-                                }
-                            }
-                        ), in: 0...100) {
-                            Text("Qty: \(count)")
-                                .font(.system(size: 13))
-                                .foregroundColor(.secondary)
-                        }
-                        .frame(width: 150)
-                        
+                    let count = cartItem.count
+                    if let product = productVM.products.first(where: { $0.id == cartItem.id }) {
+                        CartItemView(count: count, product: product)
+                            .padding(.vertical, 5)
                     }
-                    .padding(.vertical, 5)
+                    
                 }
             }
             
-            chekoutButton
-                .frame(maxHeight: .infinity, alignment: .bottom)
-                .padding(.horizontal)
+            VStack(spacing: 20) {
+        
+                if productVM.totalPrice > 0 {
+        
+                    totalLabel
+        
+                }
+        
+                chekoutButton
+        
+            }
+            .frame(maxHeight: .infinity, alignment: .bottom)
+            .padding(.horizontal)
             
         }
         .navigationTitle("Cart")
@@ -79,7 +57,18 @@ struct CartView: View {
     var chekoutButton: some View {
         
         Button(action: {
-            print("Checkout Now")
+            
+            if productVM.itemsCount > 0 {
+                productVM.clearCart()
+                productVM.makePurchase()
+            } else {
+                productVM.isErrorEncountered = true
+                productVM.errorMessage = "No items in cart to checkout, go back to products page to add some."
+                DispatchQueue.main.asyncAfter(deadline: .now() + 3, execute: {
+                    self.productVM.isErrorEncountered = false
+                    self.productVM.errorMessage = nil
+                })
+            }
             
         }) {
             HStack {
@@ -89,11 +78,118 @@ struct CartView: View {
             .font(.headline)
             .frame(maxWidth: .infinity)
             .padding()
-            .background(Color.green)
+            .background(Color.green.opacity(productVM.itemsCount > 0 ? 1 : 0.7))
             .foregroundColor(.white)
             .cornerRadius(10)
         }
         
     }
     
+    var totalLabel: some View {
+        HStack {
+            
+            Text("Total")
+                .font(.system(size: 22, weight: .bold))
+                .foregroundColor(.primary)
+            
+            Spacer()
+            
+            Text("USD \(String(format: "%.2f", productVM.totalPrice))") // Currency hardcoded assuming there is a global currency one gets with the Products
+                .font(.system(size: 22, weight: .bold))
+                .foregroundColor(.primary)
+            
+        }
+    }
+    
+    func CartItemView(count: Int, product: Product) -> some View {
+        
+        HStack {
+            
+            VStack(alignment: .leading) {
+                
+                Text(product.name)
+                    .font(.headline)
+                
+                Text(product.description)
+                    .font(.system(size: 13))
+                    .foregroundColor(.secondary)
+                
+            }
+            
+            Spacer()
+            
+            Text("@ \(product.currencySymbol)\(String(format: "%.2f", product.price))")
+                .font(.system(size: 13))
+                .foregroundColor(.secondary)
+            
+            HStack {
+                
+                Button(action: {
+                    productVM.removeFromCart(productID: product.id)
+                }) {
+                    
+                    ZStack {
+                        
+                        Color.red.opacity(0.4)
+                            .frame(width: 30, height: 30)
+                            .clipShape(.circle)
+                        
+                        Image(systemName: "minus")
+                            .foregroundColor(.red)
+                        
+                    }
+                    
+                }
+                .buttonStyle(PlainButtonStyle())
+                
+                Spacer()
+                
+                Text("\(productVM.cart.first(where: { $0.id == product.id })?.count ?? 0)")
+                    .font(.system(size: 16, weight: .bold))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.5)
+                
+                Spacer()
+                
+                let cartQty = productVM.cart.first(where: { $0.id == product.id })?.count ?? 0
+                
+                Button(action: {
+                    if cartQty < product.quantity {
+                        productVM.addToCart(productID: product.id)
+                    } else {
+                        showMaxItemsAlert = true
+                    }
+                }) {
+                    
+                    ZStack {
+                        
+                        Color.blue.opacity(0.4)
+                            .frame(width: 30, height: 30)
+                            .clipShape(.circle)
+                        
+                        Image(systemName: "plus")
+                            .foregroundColor(.blue)
+                        
+                    }
+                    .opacity(cartQty < product.quantity ? 1 : 0.3)
+                    
+                }
+                .buttonStyle(PlainButtonStyle())
+                
+            }
+            .frame(maxWidth: 110)
+            
+        }
+        .alert("Maximum Quantity", isPresented: $showMaxItemsAlert) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            Text("You can only add \(product.quantity) \(product.name)s to cart!")
+        }
+        
+    }
+    
 }
+
+//#Preview {
+//    ContentView()
+//}

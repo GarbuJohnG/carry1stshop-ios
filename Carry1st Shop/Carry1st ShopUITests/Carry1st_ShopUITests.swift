@@ -6,6 +6,7 @@
 //
 
 import XCTest
+@testable import Carry1st_Shop
 
 final class Carry1st_ShopUITests: XCTestCase {
 
@@ -40,4 +41,74 @@ final class Carry1st_ShopUITests: XCTestCase {
             }
         }
     }
+    
+    func testProductListDisplaysCorrectData() {
+        
+        let mockProducts = MockData.sampleProducts
+        let viewModel = ProductViewModel()
+        viewModel.products = mockProducts
+        
+        let view = ContentView()
+            .environmentObject(viewModel)
+        
+        for product in mockProducts {
+            XCTAssertTrue(view.accessibilityElements.contains { element in
+                  element.label?.contains(product.name) ?? false
+                }, "List should display product names")
+        }
+    }
+    
+    func testOfflineBannerIsShown() {
+        let viewModel = ProductViewModel()
+        viewModel.isOffline = true
+        let view = ContentView()
+            .environmentObject(viewModel)
+        XCTAssertTrue(view.accessibilityElements.contains { element in
+            element.label?.contains("You are offline") ?? false
+        }, "Offline banner should be visible when offline")
+    }
+    
+    func testProductListDisplaysCorrectData() {
+        let mockProducts = MockData.sampleProducts
+        let viewModel = ProductViewModel()
+        viewModel.products = mockProducts
+        let view = ContentView()
+            .environmentObject(viewModel)
+        for product in mockProducts {
+            XCTAssertTrue(view.accessibilityElements.contains { element in
+                element.label?.contains(product.name) ?? false
+            }, "List should display product names")
+        }
+    }
+
+
+    
+}
+
+class MockNetworkService: NetworkService {
+    
+    let mockData: [Product]?
+    let shouldFail: Bool
+    
+    init(mockData: [Product]? = nil, shouldFail: Bool = false) {
+        self.mockData = mockData
+        self.shouldFail = shouldFail
+    }
+    
+    override func fetchData<T>(endpoint: String, responseType: T.Type, completion: @escaping (Result<T, Error>) -> Void) where T : Decodable {
+        if shouldFail {
+            completion(.failure(NSError(domain: "Test Error", code: 1, userInfo: nil)))
+        } else if let mockData = mockData as? T {
+            completion(.success(mockData))
+        }
+    }
+    
+}
+
+
+struct MockData {
+    static let sampleProducts = [
+        Product(id: 1, name: "Product 1", description: "Description 1", price: 10.0, currencyCode: "USD", currencySymbol: "$", quantity: 100, imageLocation: "image1.jpg", status: "available"),
+        Product(id: 2, name: "Product 2", description: "Description 2", price: 20.0, currencyCode: "USD", currencySymbol: "$", quantity: 200, imageLocation: "image2.jpg", status: "available")
+    ]
 }

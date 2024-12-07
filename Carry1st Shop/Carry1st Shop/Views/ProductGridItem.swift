@@ -28,7 +28,7 @@ struct ProductGridItem: View {
                     VStack {
                         
                         if let url = URL(string: product.imageLocation) {
-                            CachedImageView(url: url, imageWidth: itemWidth, imageHeight: itemHeight - 50)
+                            CachedImageView(url: url, imageWidth: itemWidth - 40, imageHeight: itemHeight - 50)
                         } else {
                             Rectangle()
                                 .foregroundColor(Color(UIColor.systemGray5))
@@ -48,7 +48,7 @@ struct ProductGridItem: View {
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(.horizontal)
                         
-                        Text("\(product.currencySymbol)\(String(format: "%.2f", product.price))")
+                        Text("\(product.currencyCode) \(String(format: "%.2f", product.price))")
                             .font(.system(size: 15))
                             .foregroundColor(.secondary)
                             .frame(maxWidth: .infinity, alignment: .leading)
