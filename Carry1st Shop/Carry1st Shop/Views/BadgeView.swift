@@ -20,7 +20,7 @@ struct BadgeView: View {
             if count > 0 {
                 Text(String(count))
                     .font(.system(size: 12))
-                    .foregroundStyle(.white)
+                    .foregroundColor(.white)
                     .scaledToFill()
                     .minimumScaleFactor(0.5)
                     .lineLimit(1)

@@ -90,7 +90,7 @@ struct CartView: View {
             .frame(maxWidth: .infinity)
             .padding()
             .background(Color.green)
-            .foregroundStyle(.white)
+            .foregroundColor(.white)
             .cornerRadius(10)
         }
         

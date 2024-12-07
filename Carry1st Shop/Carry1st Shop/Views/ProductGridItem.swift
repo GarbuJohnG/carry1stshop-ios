@@ -27,24 +27,12 @@ struct ProductGridItem: View {
                     
                     VStack {
                         
-                        AsyncImage(url: URL(string: product.imageLocation)) { image in
-                            
-                            image
-                                .resizable()
-                                .scaledToFit()
+                        if let url = URL(string: product.imageLocation) {
+                            CachedImageView(url: url, imageWidth: itemWidth, imageHeight: itemHeight - 50)
+                        } else {
+                            Rectangle()
+                                .foregroundColor(Color(UIColor.systemGray5))
                                 .frame(width: itemWidth, height: itemHeight - 50)
-                            
-                        } placeholder: {
-                            ZStack {
-                                
-                                Rectangle()
-                                    .foregroundColor(Color(UIColor.systemGray5))
-                                    .frame(width: itemWidth, height: itemHeight - 50)
-                                    .cornerRadius(3)
-                                
-                                ProgressView()
-                                
-                            }
                         }
                         
                         Spacer()
@@ -70,7 +58,7 @@ struct ProductGridItem: View {
                     .frame(width: itemWidth, height: itemHeight)
                     .background(
                         LinearGradient(
-                            gradient: Gradient(colors: [.clear, .clear, .white]),
+                            gradient: Gradient(colors: [.clear, .clear, Color(UIColor.systemBackground)]),
                             startPoint: .top,
                             endPoint: .bottom
                         )
@@ -87,8 +75,4 @@ struct ProductGridItem: View {
         
     }
     
-}
-
-#Preview {
-    ContentView()
 }
